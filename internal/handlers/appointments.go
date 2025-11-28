@@ -5,6 +5,7 @@ import (
 	"nutri-api/internal/database"
 	"nutri-api/internal/models"
 	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,12 +36,14 @@ func CreateTestAppointment(c *gin.Context) {
 
 func GetAppointments(c *gin.Context) {
 	userID := c.Query("user_id")
-
+	now := time.Now()
 	var appointments []models.Appointment
 	if err := database.DB.
 		Preload("Nutritionist"). // Esto carga la relación
 		Where("user_id = ?", userID).
 		Or("nutritionist_id = ?", userID).
+		Where("scheduled_at >= ?", now).
+		Order("scheduled_at ASC").
 		Find(&appointments).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch appointments"})
 		return
