@@ -44,6 +44,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// Check if nutritionist profile exists
+		if user.Role == "nutritionist" {
+			var count int64
+			database.DB.Model(&models.Nutritionist{}).Where("user_id = ?", user.ID).Count(&count)
+			user.HasProfile = count > 0
+		} else {
+			user.HasProfile = true
+		}
+
 		c.Set("user", user)
 		c.Next()
 	}

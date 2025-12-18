@@ -17,4 +17,5 @@ import (
 		UpdatedAt      time.Time      `json:"updated_at"`
 		DeletedAt      gorm.DeletedAt `gorm:"index" json:"-"`
 		Nutritionist   *Nutritionist  `gorm:"foreignKey:NutritionistID" json:"nutritionist,omitempty"`
+		User           *User          `gorm:"foreignKey:UserID" json:"user,omitempty"`
 }
